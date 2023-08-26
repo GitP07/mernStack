@@ -40,7 +40,8 @@ app.get("/:title", function(req,res){
     res.send(val);
 
 })
-//cat/aut
+
+
 app.post("/editBookPrice",function(req,res){
     const id = req.body.unique_id;
 
@@ -53,7 +54,33 @@ app.post("/editBookPrice",function(req,res){
         }
         
     }
-    res.send("This id does not exist");
+    res.send(" This id does not exist");
     
+})
+
+app.post("/editBookCategory", function(req,res){
+    const id = req.body.unique_id
+
+    for(let i = 0; i < listBooks.length; i++){
+        if(listBooks[i].unique_id == id ){
+            listBooks[i].category = req.body.category;
+            res.send(JSON.stringify(listBooks[i]));
+            return;
+        }
+    }
+    res.send("This id does not exist");
+})
+
+app.post("/editBookAuthor", function(req,res){
+    const id = req.body.unique_id;
+    for (let i = 0; i < listBooks.length; i++) {
+        if(listBooks[i].unique_id == id){
+            listBooks[i].author_name = req.body.author_name;
+            res.send(JSON.stringify(listBooks[i]));
+            return;
+        }
+        
+    }
+    res.send("This id does not exist")
 })
 app.listen(8080);
