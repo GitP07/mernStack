@@ -58,6 +58,7 @@ app.post("/editBookPrice",function(req,res){
     
 })
 
+//Api For Updating Book Category 
 app.post("/editBookCategory", function(req,res){
     const id = req.body.unique_id
 
@@ -71,6 +72,7 @@ app.post("/editBookCategory", function(req,res){
     res.send("This id does not exist");
 })
 
+// Api For Updating Book Author Name
 app.post("/editBookAuthor", function(req,res){
     const id = req.body.unique_id;
     for (let i = 0; i < listBooks.length; i++) {
