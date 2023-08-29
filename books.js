@@ -76,7 +76,8 @@ app.post("/editBookCategory", function(req,res){
 app.post("/editBookAuthor", function(req,res){
     const id = req.body.unique_id;
     for (let i = 0; i < listBooks.length; i++) {
-        if(listBooks[i].unique_id == id){
+        if(id != null && listBooks[i].unique_id == id){
+            console.log(req.body.unique_id);
             listBooks[i].author_name = req.body.author_name;
             res.send(JSON.stringify(listBooks[i]));
             return;
