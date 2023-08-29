@@ -44,46 +44,135 @@ app.get("/:title", function(req,res){
 
 app.post("/editBookPrice",function(req,res){
     const id = req.body.unique_id;
+    var key = req.body;
+    let pcount = 0;
+    let ncount = 0;
 
-    for (let i = 0; i < listBooks.length; i++) {
-        if(listBooks[i].unique_id == id){
-            console.log(listBooks[i].book_name);
-            listBooks[i].price = req.body.price;
-            res.send(JSON.stringify(listBooks[i]));
-            return;
+    for(key1 in listBooks[0]){
+        for(key2 in key){
+            if(key1.includes(key2)){
+                pcount += 1;
+            }
+            else{
+                ncount +=1;
+
+            }
         }
+    }
+
+    console.log(pcount);
+    console.log(ncount);
+    
+    if(ncount >= 25){
+        res.send("Do not enter extra key value");
         
     }
-    res.send(" This id does not exist");
+    else if(pcount ==5){
+        for (let i = 0; i < listBooks.length; i++) {
+            if(listBooks[i].unique_id == id){
+                console.log(listBooks[i].book_name);
+                listBooks[i].price = req.body.price;
+                res.send(JSON.stringify(listBooks[i]));
+                return;
+            }
+        
+        }
+        res.send(" This id does not exist");
+    }
+    else{
+        res.send("Please all and vaild keys of books");
+    }
     
 })
+
 
 //Api For Updating Book Category 
 app.post("/editBookCategory", function(req,res){
     const id = req.body.unique_id
+    var key = req.body;
+    let pcount = 0;
+    let ncount = 0;
 
-    for(let i = 0; i < listBooks.length; i++){
-        if(listBooks[i].unique_id == id ){
-            listBooks[i].category = req.body.category;
-            res.send(JSON.stringify(listBooks[i]));
-            return;
+        for(key1 in listBooks[0]){
+            for(key2 in key){
+                if(key1.includes(key2)){
+                     pcount += 1;
+                }
+                else{
+                    ncount +=1;
+
+                }
+            }
         }
+
+    console.log(pcount);
+    console.log(ncount);
+    
+    if(ncount >= 25){
+        res.send("Do not enter extra key value");
+        
     }
-    res.send("This id does not exist");
+    else if(pcount == 5){
+        for(let i = 0; i < listBooks.length; i++){
+            if(listBooks[i].unique_id == id ){
+                listBooks[i].category = req.body.category;
+                res.send(JSON.stringify(listBooks[i])+"<br></br>"+"Author name Updated Successfully");
+                return;
+            }
+        }
+        res.send("This id does not exist");
+    }
+    else{
+        res.send("Please all and vaild keys of books");
+    }
+
 })
+
 
 // Api For Updating Book Author Name
 app.post("/editBookAuthor", function(req,res){
     const id = req.body.unique_id;
-    for (let i = 0; i < listBooks.length; i++) {
-        if(id != null && listBooks[i].unique_id == id){
-            console.log(req.body.unique_id);
-            listBooks[i].author_name = req.body.author_name;
-            res.send(JSON.stringify(listBooks[i]));
-            return;
+    var key = req.body;
+    let pcount = 0;
+    let ncount = 0;
+
+        for(key1 in listBooks[0]){
+            for(key2 in key){
+                if(key1.includes(key2)){
+                     pcount += 1;
+                }
+                else{
+                    ncount +=1;
+
+                }
+            }
         }
+
+    console.log(pcount);
+    console.log(ncount);
+
+    if(ncount >= 25){
+        res.send("Do not enter extra key value");
         
     }
-    res.send("This id does not exist")
+    else if (pcount == 5){
+        
+        for (let i = 0; i < listBooks.length; i++) {
+            
+            if(id != null && listBooks[i].unique_id == id){
+                    
+                listBooks[i].author_name = req.body.author_name;
+                res.send(JSON.stringify(listBooks[i])+"<br></br>"+"Author name Updated Successfully");
+                return;
+            }
+                
+        }
+        res.send("This id does not exist")
+    }
+    else{
+        res.send("Please enter all and vaild keys of books");
+    }
+   
+
 })
 app.listen(8080);
