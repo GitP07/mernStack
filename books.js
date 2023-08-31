@@ -23,7 +23,7 @@ app.get("/", function(req,res){
 
 })
 
-app.get("/:title", function(req,res){
+app.get("/getBookByName/:title", function(req,res){
     let bookname = req.params.title;
     let val = "";
     for(var i = 0; i < listBooks.length; i++){
@@ -36,6 +36,10 @@ app.get("/:title", function(req,res){
             + "Category: " +listBooks[i].category + "<br></br>"
             + "Price: " +listBooks[i].price;
         }
+        else{
+            val = "This Book Is Not Available In The Books List";
+            
+        }
     }
     res.send(val);
 
@@ -44,32 +48,22 @@ app.get("/:title", function(req,res){
 
 app.post("/editBookPrice",function(req,res){
     const id = req.body.unique_id;
-    var key = req.body;
-    let pcount = 0;
-    let ncount = 0;
+    let userArr = Object.keys(req.body);
+    let dataArr = Object.keys(listBooks[0]);
+    let tempArr = [];
 
-    for(key1 in listBooks[0]){
-        for(key2 in key){
-            if(key1.includes(key2)){
-                pcount += 1;
-            }
-            else{
-                ncount +=1;
-
-            }
+    for (let i = 0; i < dataArr.length; i++) {
+        let validKey = userArr[i];
+        if(dataArr.indexOf(validKey) >= 0){
+            tempArr.push(userArr[i])
         }
-    }
-
-    console.log(pcount);
-    console.log(ncount);
-    
-    if(ncount >= 25){
-        res.send("Do not enter extra key value");
         
     }
-    else if(pcount ==5){
+    
+    if(userArr.length === tempArr.length){
         for (let i = 0; i < listBooks.length; i++) {
             if(listBooks[i].unique_id == id){
+
                 console.log(listBooks[i].book_name);
                 listBooks[i].price = req.body.price;
                 res.send(JSON.stringify(listBooks[i]));
@@ -80,7 +74,7 @@ app.post("/editBookPrice",function(req,res){
         res.send(" This id does not exist");
     }
     else{
-        res.send("Please all and vaild keys of books");
+        res.send("Please enter all and vaild keys of books");
     }
     
 })
@@ -89,32 +83,25 @@ app.post("/editBookPrice",function(req,res){
 //Api For Updating Book Category 
 app.post("/editBookCategory", function(req,res){
     const id = req.body.unique_id
-    var key = req.body;
-    let pcount = 0;
-    let ncount = 0;
+    let userArr = Object.keys(req.body);
+    let dataArr = Object.keys(listBooks[0]);
+    let tempArr = [];
 
-        for(key1 in listBooks[0]){
-            for(key2 in key){
-                if(key1.includes(key2)){
-                     pcount += 1;
-                }
-                else{
-                    ncount +=1;
+    for (let i = 0; i < dataArr.length; i++) {
 
-                }
-            }
+        let validKey = userArr[i];
+        if(dataArr.indexOf(validKey) >= 0){
+
+            tempArr.push(userArr[i])
         }
-
-    console.log(pcount);
-    console.log(ncount);
-    
-    if(ncount >= 25){
-        res.send("Do not enter extra key value");
         
     }
-    else if(pcount == 5){
+    
+    
+    if(userArr.length === tempArr.length){
         for(let i = 0; i < listBooks.length; i++){
-            if(listBooks[i].unique_id == id ){
+            if(id != null && listBooks[i].unique_id == id ){
+
                 listBooks[i].category = req.body.category;
                 res.send(JSON.stringify(listBooks[i])+"<br></br>"+"Author name Updated Successfully");
                 return;
@@ -123,7 +110,7 @@ app.post("/editBookCategory", function(req,res){
         res.send("This id does not exist");
     }
     else{
-        res.send("Please all and vaild keys of books");
+        res.send("Please enter all and vaild keys of books");
     }
 
 })
@@ -132,31 +119,22 @@ app.post("/editBookCategory", function(req,res){
 // Api For Updating Book Author Name
 app.post("/editBookAuthor", function(req,res){
     const id = req.body.unique_id;
-    var key = req.body;
-    let pcount = 0;
-    let ncount = 0;
+    let userArr = Object.keys(req.body);
+    let dataArr = Object.keys(listBooks[0]);
+    let tempArr = [];
 
-        for(key1 in listBooks[0]){
-            for(key2 in key){
-                if(key1.includes(key2)){
-                     pcount += 1;
-                }
-                else{
-                    ncount +=1;
-
-                }
-            }
+    for (let i = 0; i < dataArr.length; i++) {
+        let validKey = userArr[i];
+        if(dataArr.indexOf(validKey) >= 0){
+            tempArr.push(userArr[i])
         }
-
-    console.log(pcount);
-    console.log(ncount);
-
-    if(ncount >= 25){
-        res.send("Do not enter extra key value");
         
     }
-    else if (pcount == 5){
-        
+    console.log(dataArr);
+    console.log(userArr);
+    console.log(tempArr);
+
+    if(userArr.length === tempArr.length){
         for (let i = 0; i < listBooks.length; i++) {
             
             if(id != null && listBooks[i].unique_id == id){
@@ -167,12 +145,114 @@ app.post("/editBookAuthor", function(req,res){
             }
                 
         }
-        res.send("This id does not exist")
+        res.send("This Id Does Not Exist")
     }
     else{
-        res.send("Please enter all and vaild keys of books");
-    }
-   
+        res.send("Please Enter All Valid Keys");
+    } 
 
 })
+
+
+//Api to get all Book Category
+app.get("/getCategory", function(req,res){
+
+    let catArr = [];
+    for(let i = 0; i < listBooks.length; i++){
+        catArr.push(listBooks[i].category);
+    }
+
+    res.send(catArr);
+})
+
+
+//Api to add new book in the booklist
+app.post("/addBook", function(req,res){
+    let newBook = req.body;
+    let userArr = Object.keys(req.body);
+    let dataArr = Object.keys(listBooks[0]);
+    let tempArr = [];
+
+    for (let i = 0; i < dataArr.length; i++) {
+        let validKey = userArr[i];
+        if(dataArr.indexOf(validKey) >= 0){
+            tempArr.push(userArr[i])
+        }
+        
+    }
+
+    var allbook = "";
+    if(userArr.length === tempArr.length){
+
+        for(let i = 0; i < listBooks.length; i++){
+
+            if(newBook.unique_id != null && listBooks[i].unique_id != newBook.unique_id ){
+                if(newBook.unique_id == listBooks.length+1){
+
+                    listBooks.push(newBook);
+
+                    for(let j = 0; j < listBooks.length; j++){
+                        allbook = allbook +"<br></br>" + "Unique ID: " + listBooks[j].unique_id + "<br></br>"
+                        +"Book Name: " +listBooks[j].book_name + "<br></br>" 
+                        + "Author Name: " + listBooks[j].author_name + "<br></br>" 
+                        + "Category: " + listBooks[j].category + "<br></br>" 
+                        + "Price: " + listBooks[j].price +"<br></br>";
+                    }  
+                    break;
+                }
+                else{
+                    let id = listBooks.length+1
+                    res.send("new book id must be: "+id);
+                    break;
+                }
+
+                
+            }
+            else{
+                res.send("id is present");
+                break;
+            }
+            
+        }
+        res.send(" New Book Added Successfully"+"<br></br>"+JSON.stringify(newBook)+"<br></br>"+allbook/*+JSON.stringify(listBooks)*/);
+
+    }
+    else{
+        res.send("Please Enter Valid Keys Of Book To Add New Book To The List Of Books")
+    }
+    
+})
+
+
+//Api to delete book with their id 
+app.post("/deleteBook", function(req,res){
+
+    let id = req.body.unique_id;
+    let newArr = [];
+    let allbook = "";
+
+    if (id <= listBooks.length && id > 0){
+        for(let i = 0; i < listBooks.length; i++){
+            if(id != listBooks[i].unique_id){
+                newArr.push(listBooks[i])
+            }
+        }
+        for(let j = 0; j < newArr.length; j++){
+
+            allbook = allbook +"<br></br>" + "Unique ID: " + newArr[j].unique_id + "<br></br>"
+            +"Book Name: " +newArr[j].book_name + "<br></br>" 
+            + "Author Name: " + newArr[j].author_name + "<br></br>" 
+            + "Category: " + newArr[j].category + "<br></br>" 
+            + "Price: " + newArr[j].price +"<br></br>";
+        }
+        res.send("List Of Books After Deleting Book With ID:"+id+"<br></br>"+allbook);
+    }
+    else{
+        res.send("ID Is Not Available In The Book List");
+    }  
+
+
+})
+
 app.listen(8080);
+
