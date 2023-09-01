@@ -1,47 +1,53 @@
-let express = require("express");
-let app  = express();
-var bodyParser = require('body-parser')
+const express = require("express");
+const app  = express();
+var bodyParser = require('body-parser');
 
-app.use(bodyParser.json())
+const {MongoClient} = require("mongodb");
+const dataBase = "mongodb+srv://priyesh7:PG1ewPrnzZmK8HCa@cluster0.6jnltjp.mongodb.net/?retryWrites=true&w=majority";
 
-var listBooks = [{"book_name":"The Alchemist","author_name":"Paulo Coelho","unique_id":1,"category":"Fiction","price":200},{"book_name":"Yellowface","author_name":"R. F. Kuang","unique_id":2,"category":"Fiction","price":180},{"book_name":"Dracula","author_name":"Bram Stoker","unique_id":3,"category":"Horror","price":350},{"book_name":"House of Leaves","author_name":"Mark Z. Danielewski","unique_id":4,"category":"Horror","price":250},{"book_name":"Ring","author_name":"Koji Suzuki","unique_id":5,"category":"Horror","price":150},{"book_name":"Bossypants","author_name":"Tina Fey","unique_id":6,"category":"Funny","price":120},{"book_name":"Bridget Jones's Diary","author_name":"Helen Fielding","unique_id":7,"category":"Funny","price":300},{"book_name":"The Silent Patient","author_name":"Alex Michaelides","unique_id":8,"category":"Thriller","price":400},{"book_name":"Gone Girl","author_name":"Gillian Flynn","unique_id":9,"category":"Mystery","price":400},{"book_name":"The Girl with the Dragon Tattoo","author_name":"Stieg Larsson","unique_id":10,"category":"Mystery","price":400}];
 
-app.get("/", function(req,res){
+app.use(bodyParser.json());
 
-    var allbook = "";
+var listBooks = [{"book_name":"The Alchemist","author_name":"Paulo Coelho","unique_id":1,"category":"Fiction","price":200},
+{"book_name":"Yellowface","author_name":"R. F. Kuang","unique_id":2,"category":"Fiction","price":180},
+{"book_name":"Dracula","author_name":"Bram Stoker","unique_id":3,"category":"Horror","price":350},
+{"book_name":"House of Leaves","author_name":"Mark Z. Danielewski","unique_id":4,"category":"Horror","price":250},
+{"book_name":"Ring","author_name":"Koji Suzuki","unique_id":5,"category":"Horror","price":150},
+{"book_name":"Bossypants","author_name":"Tina Fey","unique_id":6,"category":"Funny","price":120},
+{"book_name":"Bridget Jones's Diary","author_name":"Helen Fielding","unique_id":7,"category":"Funny","price":300},
+{"book_name":"The Silent Patient","author_name":"Alex Michaelides","unique_id":8,"category":"Thriller","price":400},
+{"book_name":"Gone Girl","author_name":"Gillian Flynn","unique_id":9,"category":"Mystery","price":400},
+{"book_name":"The Girl with the Dragon Tattoo","author_name":"Stieg Larsson","unique_id":10,"category":"Mystery","price":400}];
 
-    for(var i = 0; i < listBooks.length; i++){
 
-        allbook = allbook +"<br></br>" + "Unique ID: " + listBooks[i].unique_id + "<br></br>"
-        +"Book Name: " +listBooks[i].book_name + "<br></br>" 
-        + "Author Name: " + listBooks[i].author_name + "<br></br>" 
-        + "Category: " + listBooks[i].category + "<br></br>" 
-        + "Price: " + listBooks[i].price +"<br></br>";  
-           
-    }
-    res.send(allbook); 
+let message = {};
+
+app.get("/", async function(req,res){
+    const client = new MongoClient(dataBase);
+
+    await client.connect().then(()=>{
+        console.log("DataBase Connection Sucessful");
+    }).catch((err)=>{
+        console.log("DataBase did not Connect");
+    });
+    res.send(JSON.stringify(listBooks)); 
 
 })
 
 app.get("/getBookByName/:title", function(req,res){
     let bookname = req.params.title;
-    let val = "";
+    message = {err:"This Book Is Not Available In The Books List"};
     for(var i = 0; i < listBooks.length; i++){
+
         console.log(listBooks[i].book_name.indexOf(bookname));
         if(listBooks[i].book_name.indexOf(bookname) >= 0  ){
-           
-            val = val + "<br></br>" + "Unique ID: " +listBooks[i].unique_id + "<br></br>"
-            + "Book Name: " + listBooks[i].book_name + "<br></br>" 
-            + "Author Name:" + listBooks[i].author_name + "<br></br>"
-            + "Category: " +listBooks[i].category + "<br></br>"
-            + "Price: " +listBooks[i].price;
+
+            res.send(JSON.stringify(listBooks[i]))
+            return
         }
-        else{
-            val = "This Book Is Not Available In The Books List";
-            
-        }
+      
     }
-    res.send(val);
+    res.send(JSON.stringify(message));
 
 })
 
@@ -71,10 +77,12 @@ app.post("/editBookPrice",function(req,res){
             }
         
         }
-        res.send(" This id does not exist");
+        message = {err:" This id does not exist"};
+        res.send(JSON.stringify(message));
     }
     else{
-        res.send("Please enter all and vaild keys of books");
+        message = {err:"Please enter all and vaild keys of books"};
+        res.send(JSON.stringify(message));
     }
     
 })
@@ -103,14 +111,16 @@ app.post("/editBookCategory", function(req,res){
             if(id != null && listBooks[i].unique_id == id ){
 
                 listBooks[i].category = req.body.category;
-                res.send(JSON.stringify(listBooks[i])+"<br></br>"+"Author name Updated Successfully");
+                res.send(JSON.stringify(listBooks[i]));
                 return;
             }
         }
-        res.send("This id does not exist");
+        message = {err:"This id does not exist"}
+        res.send(JSON.stringify(message));
     }
     else{
-        res.send("Please enter all and vaild keys of books");
+        message = {err:"Please enter all and vaild keys of books"}
+        res.send(JSON.stringify(message));
     }
 
 })
@@ -130,9 +140,6 @@ app.post("/editBookAuthor", function(req,res){
         }
         
     }
-    console.log(dataArr);
-    console.log(userArr);
-    console.log(tempArr);
 
     if(userArr.length === tempArr.length){
         for (let i = 0; i < listBooks.length; i++) {
@@ -140,15 +147,17 @@ app.post("/editBookAuthor", function(req,res){
             if(id != null && listBooks[i].unique_id == id){
                     
                 listBooks[i].author_name = req.body.author_name;
-                res.send(JSON.stringify(listBooks[i])+"<br></br>"+"Author name Updated Successfully");
+                res.send(JSON.stringify(listBooks[i]));
                 return;
             }
                 
         }
-        res.send("This Id Does Not Exist")
+    message = {err:"This Id Does Not Exist"};
+        res.send(JSON.stringify(message))
     }
     else{
-        res.send("Please Enter All Valid Keys");
+        message = {err:"Please Enter All Valid Keys"};
+        res.send(JSON.stringify(message));
     } 
 
 })
@@ -189,36 +198,32 @@ app.post("/addBook", function(req,res){
             if(newBook.unique_id != null && listBooks[i].unique_id != newBook.unique_id ){
                 if(newBook.unique_id == listBooks.length+1){
 
-                    listBooks.push(newBook);
-
-                    for(let j = 0; j < listBooks.length; j++){
-                        allbook = allbook +"<br></br>" + "Unique ID: " + listBooks[j].unique_id + "<br></br>"
-                        +"Book Name: " +listBooks[j].book_name + "<br></br>" 
-                        + "Author Name: " + listBooks[j].author_name + "<br></br>" 
-                        + "Category: " + listBooks[j].category + "<br></br>" 
-                        + "Price: " + listBooks[j].price +"<br></br>";
-                    }  
-                    break;
+                    listBooks.push(newBook); 
+                    return;
                 }
                 else{
-                    let id = listBooks.length+1
-                    res.send("new book id must be: "+id);
-                    break;
+                    let ID = listBooks.length+1
+                    message = {err:"new book id must be: ",id:ID}
+                    res.send(JSON.stringify(message));
+                    return;
                 }
 
                 
             }
             else{
-                res.send("id is present");
-                break;
+                message = {err:"ID Is Present"};
+                res.send(message);
+                return
             }
             
         }
-        res.send(" New Book Added Successfully"+"<br></br>"+JSON.stringify(newBook)+"<br></br>"+allbook/*+JSON.stringify(listBooks)*/);
+        message = {mess:" New Book Added Successfully "};
+        res.send(JSON.stringify(message)+JSON.stringify(newBook)+JSON.stringify(listBooks));
 
     }
     else{
-        res.send("Please Enter Valid Keys Of Book To Add New Book To The List Of Books")
+        message = {err:"Please Enter Valid Keys Of Book To Add New Book To The List Of Books"};
+        res.send(message);
     }
     
 })
@@ -228,27 +233,22 @@ app.post("/addBook", function(req,res){
 app.post("/deleteBook", function(req,res){
 
     let id = req.body.unique_id;
-    let newArr = [];
     let allbook = "";
 
     if (id <= listBooks.length && id > 0){
-        for(let i = 0; i < listBooks.length; i++){
-            if(id != listBooks[i].unique_id){
-                newArr.push(listBooks[i])
-            }
-        }
-        for(let j = 0; j < newArr.length; j++){
 
-            allbook = allbook +"<br></br>" + "Unique ID: " + newArr[j].unique_id + "<br></br>"
-            +"Book Name: " +newArr[j].book_name + "<br></br>" 
-            + "Author Name: " + newArr[j].author_name + "<br></br>" 
-            + "Category: " + newArr[j].category + "<br></br>" 
-            + "Price: " + newArr[j].price +"<br></br>";
+        for(let j = 0; j < listBooks.length; j++){
+            if(id === listBooks[j].unique_id){
+                listBooks.splice(j,1);
+
+            }
+               
         }
-        res.send("List Of Books After Deleting Book With ID:"+id+"<br></br>"+allbook);
+        res.send(JSON.stringify(listBooks));
     }
     else{
-        res.send("ID Is Not Available In The Book List");
+        message = {err:"ID Is Not Available In The Book List"};
+        res.send(message);
     }  
 
 
