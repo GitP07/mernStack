@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+       
+    </head>
+    <body >
+         <script>
+            function getAllBooks() {
+                // await fetch('http://localhost:8080').then((res) => {
+                //     console.log(res)
+                //     res.json();
+                // })
+                // .catch ((err) => {
+                //     console.log(`error ${err}`);
+                // });
+                
+                const booksList = [{"_id":"64f5a83f0d55beb3e2733587","book_name":"The World Of Dream","author_name":"Mick","unique_id":2,"category":"Fiction","price":299,"__v":0},{"_id":"64f1a1729b335a45f2af0ce1","book_name":"House of Leaves","author_name":"joy","unique_id":4,"category":"Mystery","price":3400},{"_id":"64f1a1729b335a45f2af0ce2","book_name":"Ring","author_name":"Koji Suzuki","unique_id":5,"category":"Horror","price":150},{"_id":"64f1a1729b335a45f2af0ce3","book_name":"Bossypants","author_name":"Tina Fey","unique_id":6,"category":"Funny","price":120},{"_id":"64f1a1729b335a45f2af0ce4","book_name":"Bridget Jones's Diary","author_name":"Helen Fielding","unique_id":7,"category":"Funny","price":300},{"_id":"64f1a1729b335a45f2af0ce5","book_name":"The Silent Patient","author_name":"Alex Michaelides","unique_id":8,"category":"Thriller","price":400},{"_id":"64f5b3e6a20e46df6ad0f07c","book_name":"The Alchemist","author_name":"Paulo Coelho","unique_id":10,"category":"Fiction","price":2199,"__v":0},{"_id":"64f6cc5a851fd9ed020210c6","book_name":"Unkown1","author_name":"Rakesh Kumar","unique_id":13,"category":"nonFiction","price":200,"__v":0}];
+                console.log(booksList[0].author_name);
+                const list = document.getElementById('list');
+
+                for (let i = 0; i < booksList.length; i++) {
+                    let books = document.createElement("li");
+                    books.textContent = "Book Name: "+booksList[i].book_name;
+                    list.appendChild(books);
+                }
+               
+            }
+        </script>
+        <ul id="list">
+        </ul>
+        <button onclick=" getAllBooks();">Item List</button>
+    </body>
+</html>
