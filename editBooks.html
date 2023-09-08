@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+    </head>
+    <body>
+        <input type="text" id="u_id">
+        <input type="text" id="author_name">
+        <button id="update">update</button>
+        <div>
+            <p id="list"></p>
+        </div>
+        <script>
+            document.getElementById("update").addEventListener("click", editAuthor)
+            
+            function editAuthor() {
+                
+                const u_id = Number(document.getElementById("u_id").value);
+                const author_name = document.getElementById("author_name").value;
+
+                console.log(u_id);
+                console.log(author_name);
+
+                fetch("http://localhost:8080/editBookAuthor", {
+                    
+                    method: "post",
+
+                    body: JSON.stringify({
+                        unique_id: u_id,
+                        author_name: author_name
+                    }),
+
+                    headers: {
+                        "Content-type": "application/json; charset=UTF-8"
+                    }
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(JSON.stringify(data));
+
+                    const updatedList = `UPDATED LIST<br>
+                    Book ID: ${data.unique_id}<br>
+                    Book Name: ${data.book_name}<br>
+                    Book Category: ${data.category}<br>
+                    Book Author: ${data.author_name}<br>
+                    Book price: ${data.price}<br>`;
+
+                    document.getElementById("list").innerHTML = updatedList;
+
+                })
+                .catch((error) =>{
+                    console.log(`error: ${error}`);
+                })
+            }
+        </script>
+    </body>
+</html>
