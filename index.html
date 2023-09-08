@@ -1,0 +1,26 @@
+<html>
+  <head> </head>
+  <body>
+    <button id="fetchData">Fetch Data</button>
+    <div id="output"></div>
+    <script>
+      document.getElementById("fetchData").addEventListener("click", fetchData);
+
+      function fetchData() {
+        fetch("http://localhost:8080/")
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(`Data: ${JSON.stringify(data)}`);
+            document.getElementById("output").innerHTML = JSON.stringify(
+              data,
+              null,
+              2
+            );
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      }
+    </script>
+  </body>
+</html>

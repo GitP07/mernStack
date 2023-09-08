@@ -2,6 +2,9 @@ let express = require("express");
 let app = express();
 var bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const cors = require('cors');
+app.use(cors());
+
 const booksSchema = require("./booksSchema");
 
 const db_uri =
