@@ -14,7 +14,7 @@
             document.getElementById("update").addEventListener("click", editAuthor)
             
             function editAuthor() {
-                
+                document.getElementById("list").innerHTML = "";
                 const u_id = Number(document.getElementById("u_id").value);
                 const author_name = document.getElementById("author_name").value;
 
