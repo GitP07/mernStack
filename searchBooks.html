@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>search Books</title>
+    </head>
+    <body>
+        <input type="text" id="search">
+        <button id="serBtn">search</button>
+
+        <script>
+            document.getElementById("serBtn").addEventListener("click", searchBooks);
+
+           async function searchBooks() {
+                const searchElement = document.getElementById("search").value;
+                let bookName = document.getElementById("search").value;
+                // let fetchUrl = "http://localhost:/getBookByName/"+bookName;
+                // console.log(fetchUrl);
+
+                await fetch("http://localhost:8080/getBookByName/"+bookName)
+                .then((response) => {
+                    console.log("ressponse"+JSON.stringify(response));
+
+                    response.json();
+                })
+                .then((data) => {
+                    console.log(data);
+                })
+                .catch((error) => {
+                    console.log(`Error: ${error}`);
+                })
+            }
+        </script>
+    </body>
+</html>
