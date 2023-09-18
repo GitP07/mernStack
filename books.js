@@ -1,5 +1,6 @@
 const express = require("express");
 const app  = express();
+const cors = require('cors')
 
 const mongoose = require("mongoose");
 const db_url = "mongodb+srv://priyesh7:7hCap9yPo88qiC7O@cluster0.6jnltjp.mongodb.net/BooksList?retryWrites=true&w=majority"
@@ -22,33 +23,28 @@ mongoose
 })
 
 app.use(bodyParser.json());
+app.use(cors());
 
 
 //Display all books data
 app.get("/", async function(req,res){
-    const response = await bookSchema.find();
+    const response = await bookSchema.find().sort({unique_id:1});
     console.log(response[0]);
     res.json(response);
 
+})
+app.get("/getBookById/:id" , async function(req,res){
+    const bookId = req.params.id;
+    const bookList = await bookSchema.findOne({unique_id:bookId});
+    bookList != null ? res.json(bookList) : res.json({message: `Book With Id: ${bookId} Is Not Available`});
 })
 
 //get book by name
 app.get("/getBookByName/:title", async function(req,res){
     const enterName = req.params.title;
-    const booksList = await bookSchema.find();
+    const booksList = await bookSchema.findOne({book_name:enterName});
 
-    for(var i = 0; i < booksList.length; i++){
-
-        console.log(booksList[i].book_name.indexOf(enterName));
-        if(booksList[i].book_name.indexOf(enterName) >= 0  ){
-
-           return res.json(booksList[i])
-        }
-      
-    }
-    res.json({message: "Book Is Not available"});
-
-   
+    (booksList != null) ? res.json(booksList) : res.json({message: "Book Is Not Available"});
 
 })
 
@@ -215,22 +211,27 @@ app.post("/addBook", async function(req,res){
 
     if(userKeys.length === tempArr.length){
         for (let i = 0; i < bookList.length; i++) {
-            if (id === bookList[i].unique_id) {
+            if (id == bookList[i].unique_id) {
                 checkId = false;
                 break;
             }
-   
+
         }
+
 
         if(checkId){
-            const newBook = new bookSchema(req.body);
-            await newBook.save();
-            const updatedBooksList = await bookSchema.find();
-            res.json({message:"updated Books List " , Books: updatedBooksList});
-
+            if(req.body.unique_id != 0 ){
+                const newBook = new bookSchema(req.body);
+                await newBook.save();
+                const updatedBooksList = await bookSchema.find().sort({unique_id:1});
+                res.json({message:"updated Books List " , Books: updatedBooksList});
+            }
+            else{
+                res.json({message: "Book ID Cannot Be 0"})
+            }
         }
         else{
-            res.json({message:"unique_id of books alresdy exist please change unique_id"});
+            res.json({message:"Book ID alresdy exist please change Book ID" });
         }
     }
     else{
