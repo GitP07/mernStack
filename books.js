@@ -4,7 +4,6 @@ const cors = require('cors')
 
 const mongoose = require("mongoose");
 const db_url = "mongodb+srv://priyesh7:7hCap9yPo88qiC7O@cluster0.6jnltjp.mongodb.net/BooksList?retryWrites=true&w=majority"
-
 const bodyParser = require("body-parser");
 
 const bookSchema = require("./bookSchema");
@@ -241,7 +240,7 @@ app.post("/addBook", async function(req,res){
 })
 
 
-//Api to delete book with their id 
+//Api to delete book with Book id 
 app.post("/deleteBook", async function(req,res){
 
     const id = req.body.unique_id;

@@ -7,7 +7,9 @@ const BooksSchema = new schema({
     author_name: String,
     unique_id: Number,
     category: String,
-    price: Number
+    price: Number,
+    book_cover: String,
+    book_description: String
    
 })
 
